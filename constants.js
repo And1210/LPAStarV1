@@ -1,4 +1,4 @@
-const WIDTH = 1000;
+const WIDTH = 750;
 const HEIGHT = 750;
 
 const POINT_NUM = 5;

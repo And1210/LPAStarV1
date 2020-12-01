@@ -7,10 +7,21 @@ class LPAStar {
     this.Initialize();
   }
 
+  Reset(graph) {
+    this.graph = graph;
+    this.costChanged = false;
+    this.pairs = [];
+
+    this.Initialize();
+  }
+
   Initialize() {
     this.U = new Queue();
-    //graph inits nodes with g and rhs of inf
-    //graph inits start node rhs to 0
+    for (let i = 0; i < POINT_NUM; i++) {
+      this.graph.getNode(i).g = Number.MAX_VALUE;
+      this.graph.getNode(i).rhs = Number.MAX_VALUE;
+    }
+    this.graph.getStart().rhs = 0;
     this.U.insert(this.graph.getStart(), this.CalculateKey(this.graph.getStart()));
   }
 
@@ -34,9 +45,10 @@ class LPAStar {
     }
   }
 
-  ComputeShortestPath() {
-    while (this.U.isLowerKey(this.U.topKey(), this.CalculateKey(this.graph.getEnd())) || this.graph.getEnd().rhs != this.graph.getEnd().g) {
+  ComputeShortestPathStep() {
+    if (this.U.isLowerKey(this.U.topKey(), this.CalculateKey(this.graph.getEnd())) || this.graph.getEnd().rhs != this.graph.getEnd().g) {
       let node = this.U.pop();
+      curNode = node.id;
       if (node.g > node.rhs) {
         node.g = node.rhs;
         let succ = node.getSuccesors();
@@ -52,6 +64,28 @@ class LPAStar {
         }
       }
     }
+  }
+
+  ComputeShortestPath() {
+    while (this.U.isLowerKey(this.U.topKey(), this.CalculateKey(this.graph.getEnd())) || this.graph.getEnd().rhs != this.graph.getEnd().g) {
+      let node = this.U.pop();
+      curNode = node.id;
+      if (node.g > node.rhs) {
+        node.g = node.rhs;
+        let succ = node.getSuccesors();
+        for (let i = 0; i < succ.length; i++) {
+          this.UpdateNode(succ[i]);
+        }
+      } else {
+        node.g = Number.MAX_VALUE;
+        this.UpdateNode(node);
+        let succ = node.getSuccesors();
+        for (let i = 0; i < succ.length; i++) {
+          this.UpdateNode(succ[i]);
+        }
+      }
+    }
+    curNode = -1;
   }
 
   //newCost - a cost matrix of same shape as one in graph with new costs
@@ -73,6 +107,10 @@ class LPAStar {
   }
 
   GetPath() {
+    if (this.U.isLowerKey(this.U.topKey(), this.CalculateKey(this.graph.getEnd())) || this.graph.getEnd().rhs != this.graph.getEnd().g) {
+      return [];
+    }
+
     let path = [this.graph.getEnd()];
     while (path[path.length-1] != this.graph.getStart()) {
       let cur = path[path.length-1];
@@ -98,8 +136,10 @@ class LPAStar {
     return out;
   }
 
-  MainStep() {
-    this.ComputeShortestPath();
+  MainStep(nextStep) {
+    if (nextStep) {
+      this.ComputeShortestPathStep();
+    }
     if (this.costChanged) {
       for (let i = 0; i < this.pairs.length; i++) {
         let cur = this.pairs[i];

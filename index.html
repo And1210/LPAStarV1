@@ -5,10 +5,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>p5.js example</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <style>
     body {
       padding: 0;
       margin: 0;
+    }
+
+    .container {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
     }
   </style>
   <script src="../p5.min.js"></script>
@@ -19,33 +41,95 @@
 </head>
 
 <body>
-  <main>
-  </main>
+  <div class="container">
+    <div class="row">
+      <div class="col-8">
+        <main>
+        </main>
+      </div>
+      <div class="col-4">
+        <table>
+          <tr>
+            <th>Node</th>
+            <th>G(node)</th>
+            <th>RHS(node)</th>
+            <th>H(node)</th>
+          </tr>
+          <tr>
+            <th id="node0">0</th>
+            <td id="node0g">0</td>
+            <td id="node0rhs">0</td>
+            <td id="node0h">0</td>
+          </tr>
+          <tr>
+            <th id="node1">1</th>
+            <td id="node1g">0</td>
+            <td id="node1rhs">0</td>
+            <td id="node1h">0</td>
+          </tr>
+          <tr>
+            <th id="node2">2</th>
+            <td id="node2g">0</td>
+            <td id="node2rhs">0</td>
+            <td id="node2h">0</td>
+          </tr>
+          <tr>
+            <th id="node3">3</th>
+            <td id="node3g">0</td>
+            <td id="node3rhs">0</td>
+            <td id="node3h">0</td>
+          </tr>
+          <tr>
+            <th id="node4">4</th>
+            <td id="node4g">0</td>
+            <td id="node4rhs">0</td>
+            <td id="node4h">0</td>
+          </tr>
+        </table>
+        <br>
+        <table>
+          <tr><th>Queue</th></tr>
+          <tr><th>Node</th><th>Key</th></tr>
+          <tr><td id="queue0node"></td><td id="queue0key"></td></tr>
+          <tr><td id="queue1node"></td><td id="queue1key"></td></tr>
+          <tr><td id="queue2node"></td><td id="queue2key"></td></tr>
+          <tr><td id="queue3node"></td><td id="queue3key"></td></tr>
+          <tr><td id="queue4node"></td><td id="queue4key"></td></tr>
+        </table>
+        <br>
+        <div>
+          <h4>Optimal Path:</h4>
+          <h4 id="path">
 
-  <div>
-    Change a Weight:
-    <select id="fromToChange" name="fromToChange">
-      <option value="0">0</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-    </select>
-    <select id="toToChange" name="toToChange">
-      <option value="0">0</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-    </select>
-    <input type="text" id="weight" name="weight">
-    <button type="button" id="weightChange" onclick="changeWeights();">Change Weight</button>
-  </div>
-  <br>
-  <div>
-    Optimal Path:
-    <div id="path">
-      
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button type="button" id="resetLPAStar" onclick="resetLPAStar();">Reset LPA*</button>
+      <button type="button" id="nextStep" onclick="advanceStep();">Next Step</button>
+    </div>
+
+    <br>
+    <div>
+      Change a Weight:
+      <select id="fromToChange" name="fromToChange">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <select id="toToChange" name="toToChange">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <input type="text" id="weight" name="weight">
+      <button type="button" id="weightChange" onclick="changeWeights();">Change Weight</button>
     </div>
   </div>
 </body>

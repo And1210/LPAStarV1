@@ -1,5 +1,10 @@
 let graph, lpa;
 
+let curNode = -1;
+let nextStep = false;
+
+let mouseIn = -1;
+
 function setup() {
   createCanvas(WIDTH, HEIGHT);
 
@@ -32,6 +37,13 @@ function draw() {
     let cur = graph.getNode(i);
 
     stroke(255);
+    if (curNode == i) {
+      stroke(0, 255, 0);
+    } else if (curNode != -1) {
+      if (graph.getSucc(curNode).includes(graph.getNode(i))) {
+        stroke(0, 0, 255);
+      }
+    }
     noFill();
     strokeWeight(2);
     circle(cur.pos.x, cur.pos.y, POINT_SIZE);
@@ -47,9 +59,62 @@ function draw() {
     stroke(255, 255, 255);
   }
 
+  //Make points moveable
+  let inNode = false;
+  for (let i = 0; i < POINT_NUM; i++) {
+    let cur = graph.getNode(i);
+    let curP = cur.pos;
+    if (pow(curP.x - mouseX, 2) + pow(curP.y - mouseY, 2) <= pow(POINT_SIZE/2, 2)) {
+      mouseIn = i;
+      inNode = true;
+      break;
+    }
+  }
+  if (!inNode) {
+    mouseIn = -1;
+  }
+
+  //Update node info table
+  for (let i = 0; i < POINT_NUM; i++) {
+    let cur = graph.getNode(i);
+    document.getElementById('node'+i+'g').innerHTML = textRound(cur.g);
+    document.getElementById('node'+i+'rhs').innerHTML = textRound(cur.rhs);
+    document.getElementById('node'+i+'h').innerHTML = textRound(graph.heuristic(cur));
+  }
+
+  //Upate queue info table
+  for (let i = 0; i < lpa.U.q.length; i++) {
+    let cur = lpa.U.q[i];
+    document.getElementById("queue"+i+"node").innerHTML = cur.node.id;
+    document.getElementById("queue"+i+"key").innerHTML = textRound(cur.key[0]) + ", " + textRound(cur.key[1]);
+  }
+  for (let i = lpa.U.q.length; i < 5; i++) {
+    document.getElementById("queue"+i+"node").innerHTML = "";
+    document.getElementById("queue"+i+"key").innerHTML = "";
+  }
+
   //Continuously update the lpa star algorithm every draw iteration
-  lpa.MainStep();
+  lpa.MainStep(nextStep);
+  nextStep = false;
   showPath();
+}
+
+//------------------------ HTML Functions ----------------------------
+
+function advanceStep() {
+  nextStep = true;
+}
+
+function resetLPAStar() {
+  //Reset queue table
+  for (let i = 0; i < lpa.U.q.length; i++) {
+    document.getElementById("queue"+i+"node").innerHTML = "";
+    document.getElementById("queue"+i+"key").innerHTML = "";
+  }
+
+  lpa.Reset(graph);
+  curNode = -1;
+  nextStep = false;
 }
 
 function changeWeights() {
@@ -85,6 +150,24 @@ function showPath() {
   document.getElementById("path").innerHTML = out;
 }
 
+//-------------------------- Move Points Functions ----------------------------
+function mousePressed() {
+  if (mouseIn != -1) {
+    graph.getNode(mouseIn).pos.set(mouseX, mouseY);
+  }
+}
+
+function mouseDragged() {
+  if (mouseIn != -1) {
+    graph.getNode(mouseIn).pos.set(mouseX, mouseY);
+  }
+}
+
+
+//------------------------ Helper Functions --------------------------------
+function textRound(num) {
+  return round(num*100)/100;
+}
 
 // draw an arrow for a vector at a given base position
 // Adapted from: https://p5js.org/reference/#/p5.Vector/magSq
