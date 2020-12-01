@@ -49,7 +49,42 @@ function draw() {
 
   //Continuously update the lpa star algorithm every draw iteration
   lpa.MainStep();
+  showPath();
 }
+
+function changeWeights() {
+  let from = int(document.getElementById("fromToChange").value);
+  let to = int(document.getElementById("toToChange").value);
+  let weight = int(document.getElementById("weight").value);
+
+  let nC = getCostCopy();
+  nC[from][to] = weight;
+  lpa.UpdateCost(nC);
+}
+
+function getCostCopy() {
+  let out = graph.getFreshCost();
+  for (let i = 0; i < graph.cost.length; i++) {
+    for (let j = 0; j < graph.cost[i].length; j++) {
+      out[i][j] = graph.cost[i][j];
+    }
+  }
+  return out;
+}
+
+function showPath() {
+  let path = lpa.GetPath();
+  let out = "";
+  for (let i = 0; i < path.length; i++) {
+    out += path[i] + " ";
+    if (i < path.length-1) {
+      out += "-> ";
+    }
+  }
+
+  document.getElementById("path").innerHTML = out;
+}
+
 
 // draw an arrow for a vector at a given base position
 // Adapted from: https://p5js.org/reference/#/p5.Vector/magSq

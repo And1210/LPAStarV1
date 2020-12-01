@@ -21,6 +21,33 @@
 <body>
   <main>
   </main>
+
+  <div>
+    Change a Weight:
+    <select id="fromToChange" name="fromToChange">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    <select id="toToChange" name="toToChange">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    <input type="text" id="weight" name="weight">
+    <button type="button" id="weightChange" onclick="changeWeights();">Change Weight</button>
+  </div>
+  <br>
+  <div>
+    Optimal Path:
+    <div id="path">
+      
+    </div>
+  </div>
 </body>
 
 </html>

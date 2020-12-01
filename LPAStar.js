@@ -60,10 +60,15 @@ class LPAStar {
     for (let i = 0; i < this.graph.cost.length; i++) {
       for (let j = 0; j < this.graph.cost[i].length; j++) {
         if (this.graph.cost[i][j] != newCost[i][j]) {
-          paris.push([i, j, newCost[i][j]]);
+          pairs.push([i, j, newCost[i][j]]);
+          if (this.graph.cost[i][j] == -1) {
+            this.graph.nodes[i].addSuccesor(this.graph.getNode(j));
+            this.graph.nodes[j].addPredecessor(this.graph.getNode(i));
+          }
         }
       }
     }
+    this.pairs = pairs;
     this.costChanged = true;
   }
 
@@ -96,14 +101,16 @@ class LPAStar {
   MainStep() {
     this.ComputeShortestPath();
     if (this.costChanged) {
-      for (let i = 0; i < this.pairs.length(); i++) {
+      for (let i = 0; i < this.pairs.length; i++) {
         let cur = this.pairs[i];
         this.graph.cost[cur[0]][cur[1]] = cur[2];
-        this.UpdateNode(cur[1]);
+        this.UpdateNode(this.graph.getNode(cur[1]));
       }
 
       this.costChanged = false;
       this.pairs = [];
+
+      console.log(this.GetPath());
     }
   }
 }
